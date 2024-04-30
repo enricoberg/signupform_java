@@ -95,12 +95,14 @@ public class AuthController {
     //THIS CONTROLLER SEARCHES FOR EXISTING USER WITHS SPECIFIED ID AND OVERWRITES THE PARAMETERS
     public ResponseEntity<String> updateuser(@PathVariable Integer id, @RequestBody SignUpRequest updateUserRequest){
         //VALIDATE THE REQUEST
-        if(updateUserRequest.getFirstname()==null || updateUserRequest.getSecondname()==null || updateUserRequest.getAddressstreet()==null || updateUserRequest.getAddressnumber()==null || updateUserRequest.getAddresscity()==null || updateUserRequest.getAddressprovince()==null || updateUserRequest.getBirthdate()==null || updateUserRequest.getPassword()==null || updateUserRequest.getEmail()==null) return ResponseEntity.status(500).body("Invalid request");
-        if(updateUserRequest.getFirstname().isEmpty() || updateUserRequest.getSecondname().isEmpty() || updateUserRequest.getAddressstreet().isEmpty()  || updateUserRequest.getAddresscity().isEmpty() || updateUserRequest.getAddressprovince().isEmpty() || updateUserRequest.getPassword().isEmpty()|| updateUserRequest.getEmail().isEmpty()) return ResponseEntity.status(500).body("Invalid request");
+        if(updateUserRequest.getEmail()==null || updateUserRequest.getPassword()==null || updateUserRequest.getFirstname()==null || updateUserRequest.getSecondname()==null || updateUserRequest.getAddressstreet()==null || updateUserRequest.getAddressnumber()==null || updateUserRequest.getAddresscity()==null || updateUserRequest.getAddressprovince()==null || updateUserRequest.getBirthdate()==null) return ResponseEntity.status(500).body("Invalid request");
+        if(updateUserRequest.getEmail().isEmpty() || updateUserRequest.getPassword().isEmpty() || updateUserRequest.getFirstname().isEmpty() || updateUserRequest.getSecondname().isEmpty() || updateUserRequest.getAddressstreet().isEmpty() || updateUserRequest.getAddresscity().isEmpty()  || updateUserRequest.getAddressprovince().isEmpty() ) return ResponseEntity.status(500).body("Invalid request");
         //VERIFY THE USER EXISTS
         Optional<User> opt_user=userRepository.findById(id);
         if(!opt_user.isPresent()) return ResponseEntity.status(500).body("The user you requested to update does not exist");
         User actual_user=opt_user.get();
+        //CHANGE ONLY THE PARAMETERS SENT WITH THE REQUEST
+        
         actual_user.setEmail(updateUserRequest.getEmail());
         actual_user.setPassword(updateUserRequest.getPassword());
         actual_user.setFirstname(updateUserRequest.getFirstname());

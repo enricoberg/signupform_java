@@ -1,0 +1,11 @@
+
+.hidden{
+    display: none;
+}
+
+.actionbutton{
+    color: white;
+    border-radius: 5px;
+    
+}
+i.actionbutton{ cursor: pointer;}
