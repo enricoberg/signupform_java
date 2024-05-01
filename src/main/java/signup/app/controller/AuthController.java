@@ -30,13 +30,14 @@ public class AuthController {
     private final SessionRepository sessionRepository;
 
 
-
+    //FUNCTION THAT RETURNS FULL LIST OF USERS
     @GetMapping("/getallusers")
     public List<User> getusers(){
         return userRepository.findAll();
 
     }
 
+    //FUNCTION TO SIGNIN AND GET THE SESSION TOKEN
     @PostMapping("/signin")
     public String signin(@RequestBody SignInRequest signinrequest){
         Optional<User> opt_user= userRepository.findByEmail(signinrequest.getEmail());
@@ -48,7 +49,7 @@ public class AuthController {
         return session.getToken(); //CORRECT PASSWORD, RETURN TOKEN
     }
 
-    //FUNCTION THAT VALIDATES THE SESSION, RETURN TRUE IF PRESENT IN DATABASE
+    //FUNCTION THAT VALIDATES THE SESSION, RETURN STATUS 200 IF PRESENT IN DATABASE
     @PostMapping("/validate")
     public ResponseEntity<String> validate(@RequestBody ValidationRequest validationRequest){
         Optional<Session> opt_session=sessionRepository.findByUserAndToken(validationRequest.getEmail(),validationRequest.getToken());
@@ -81,6 +82,7 @@ public class AuthController {
         return "1";
     }
 
+    //FUNCTION TO DELETE USER FROM DB 
     @DeleteMapping("/deleteuser/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
         try{
