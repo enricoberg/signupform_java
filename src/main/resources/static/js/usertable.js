@@ -9,7 +9,8 @@ function updateView(){
             etitem.classList.remove("etinactive");
             etitem.classList.add("etactive");
             let content=etitem.innerHTML;
-            etitem.innerHTML=`<input type="text" class="w-100 text-start" value="${content}"> `
+            etitem.innerHTML=`<input type="text" class="w-100 text-start" value="${content}"> `;
+            localStorage.setItem("content", content);
 
         });
     })
@@ -28,13 +29,19 @@ function inputToTableItem(){
             etitem.classList.add("etinactive");
         }
         const inputElement = etitem.querySelector('input[type="text"]');
+        
         if (inputElement) {
             
             let content=inputElement.value;
             inputElement.remove();
-            etitem.innerHTML=content;
-            etitem.classList.add("text-primary");
-            if(!etitem.classList.contains("edited")) etitem.classList.add("edited");
+            etitem.innerHTML=content;           
+            //COLOR ONLY THE CHANGED ITEMS
+            if(content!=localStorage.getItem("content") &&!etitem.classList.contains("edited") ) {
+                etitem.classList.add("edited");
+                etitem.classList.add("text-primary");
+            }
+            
+            
         }
     });
 }
@@ -99,16 +106,16 @@ function visualizeUsers(){
         users.forEach((element) => {
             target_table.innerHTML+=`
             <div class="row" style="position: relative;">                    
-                <div class="col-1 py-2 text-center etitem  border  bg-light etinactive boxid">${element.id}</div>
-                <div class="col-1 py-2 text-center etitem border  bg-light etinactive editable boxfirst">${element.firstname}</div>
-                <div class="col-1 py-2 text-center etitem border  bg-light etinactive editable boxsecond">${element.secondname}</div>
-                <div class="col-2 py-2 text-center etitem border  bg-light etinactive editable boxemail">${element.email}</div>
-                <div class="col-1 py-2 text-center etitem border  bg-light etinactive editable boxpassword">${element.password}</div>
-                <div class="col-1 py-2 text-center etitem border  bg-light etinactive editable boxbirthdate" >${element.birthdate}</div>
-                <div class="col-1 py-2 text-center etitem border  bg-light etinactive triggerrowcontrol editable boxstreet">${element.addressstreet}</div>
-                <div class="col-1 py-2 text-center etitem border  bg-light etinactive triggerrowcontrol editable boxnumber">${element.addressnumber}</div>
-                <div class="col-1 py-2 text-center etitem border  bg-light etinactive triggerrowcontrol editable boxcity">${element.addresscity}</div>
-                <div class="col-1 py-2 text-center etitem border  bg-light etinactive triggerrowcontrol editable boxprovince">${element.addressprovince}</div>     
+                <div class="col-1 py-2 text-center etitem  border  bg-light etinactive boxid ">${element.id}</div>
+                <div class="col-1 py-2 text-center etitem border  bg-light etinactive editable boxfirst ">${element.firstname}</div>
+                <div class="col-1 py-2 text-center etitem border  bg-light etinactive editable boxsecond ">${element.secondname}</div>
+                <div class="col-2 py-2 text-center etitem border  bg-light etinactive editable boxemail ">${element.email}</div>
+                <div class="col-1 py-2 text-center etitem border  bg-light etinactive editable boxpassword ">${element.password}</div>
+                <div class="col-1 py-2 text-center etitem border  bg-light etinactive editable boxbirthdate " >${element.birthdate}</div>
+                <div class="col-1 py-2 text-center etitem border  bg-light etinactive triggerrowcontrol editable boxstreet ">${element.addressstreet}</div>
+                <div class="col-1 py-2 text-center etitem border  bg-light etinactive triggerrowcontrol editable boxnumber ">${element.addressnumber}</div>
+                <div class="col-1 py-2 text-center etitem border  bg-light etinactive triggerrowcontrol editable boxcity ">${element.addresscity}</div>
+                <div class="col-1 py-2 text-center etitem border  bg-light etinactive triggerrowcontrol editable boxprovince ">${element.addressprovince}</div>     
                 <div class="col-1 py-2 text-center etitem border  bg-light etinactive ">
                     <i class="fa fa-trash-o bg-danger px-3 py-2 mx-2 actionbutton"  onclick="deleteItem(${element.id})" aria-hidden="true"></i> Delete
                     
@@ -181,6 +188,7 @@ function logOut(){
     location.replace("/");
 }
 visualizeUsers();
+
 
 
 

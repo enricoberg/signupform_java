@@ -10,6 +10,7 @@ function switchMode(){
 function validateLogin(submitting){
     const email = document.querySelector("#signinEmail").value;
     const password = document.querySelector("#signinPassword").value;
+    const savesession=document.querySelector("#checkeepsigned").checked;
     if(email=="" || password=="") {
         sendFormError("You must insert your credentials first","signinError");
         return;}
@@ -27,9 +28,17 @@ function validateLogin(submitting){
         if(response.data==1){            
                 sendFormError("Your credentials are not matching","signinError");
                 return;}
+        if (savesession) {
+            let expiration_date = new Date();
+            expiration_date.setFullYear(expiration_date.getFullYear() + 1);
+            document.cookie = `sessiontoken=${response.data}; path=/; expires=${expiration_date.toUTCString()};`;  
+            document.cookie = `user=${email}; path=/; expires=${expiration_date.toUTCString()};`; 
+        }
+        else{
+            document.cookie = `sessiontoken=${response.data}; path=/;`;  
+            document.cookie = `user=${email}; path=/;`; 
+        }
         
-        document.cookie = `sessiontoken=${response.data}; path=/`;  
-        document.cookie = `user=${email}; path=/`;  
         location.replace("/users");
 
     })
@@ -67,7 +76,11 @@ function validateSignup(submitting){
     else if(age<18 ){
         sendFormError("You have to be at least 18 years old to register","signupError");
         return;
-    }    
+    }  
+    else if(isNaN(addressnumber))  {
+        sendFormError("Invalid street number","signupError");
+        return;
+    }
     if(!termsaccepted) {
          sendFormError("You must accept the terms first","signupError");
          return;}

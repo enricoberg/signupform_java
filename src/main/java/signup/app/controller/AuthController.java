@@ -46,7 +46,7 @@ public class AuthController {
         Optional<User> opt_user=userRepository.findByEmail(signuprequest.getEmail());
         if(opt_user.isPresent()) return "2"; //ERROR CODE 2: USER ALREADY EXISTS
         if(!signuprequest.getEmail().matches("^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")) return "3"; //ERROR CODE 3: INVALID EMAIL
-        if(!signuprequest.getPassword().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W)(?!.* ).{8,16}$")) return "4"; //ERROR CODE 4: PASSWORD TOO WEAK
+        if(!signuprequest.getPassword().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*\\W)(?!.* ).{8,16}$")) return "4"; //ERROR CODE 4: PASSWORD TOO WEAK        
         //SAVE TO DB THE NEW USER IF ALL CONTROLS ARE PASSED
         User new_user= new User(signuprequest);
         userRepository.save(new_user);
@@ -55,4 +55,7 @@ public class AuthController {
 
         return "1";
     }
+
+
+
 }

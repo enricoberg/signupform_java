@@ -55,14 +55,14 @@ public class User {
 
     public User(SignUpRequest signUpRequest){
 
-        email=signUpRequest.getEmail();
+        email=signUpRequest.getEmail().toLowerCase();
         password=signUpRequest.getPassword();
-        firstname=signUpRequest.getFirstname();
-        secondname=signUpRequest.getSecondname();
-        addressstreet=signUpRequest.getAddressstreet();
+        firstname=signUpRequest.getFirstname().toUpperCase();
+        secondname=signUpRequest.getSecondname().toUpperCase();
+        addressstreet=signUpRequest.getAddressstreet().toUpperCase();
         addressnumber=signUpRequest.getAddressnumber();
-        addresscity=signUpRequest.getAddresscity();
-        addressprovince=signUpRequest.getAddressprovince();
+        addresscity=signUpRequest.getAddresscity().toUpperCase();
+        addressprovince=signUpRequest.getAddressprovince().toUpperCase();
         birthdate=signUpRequest.getBirthdate();
 
     }
