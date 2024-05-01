@@ -30,7 +30,7 @@ function validateLogin(submitting){
         
         document.cookie = `sessiontoken=${response.data}; path=/`;  
         document.cookie = `user=${email}; path=/`;  
-        alert("LOGGED IN")
+        location.replace("/users");
 
     })
     .catch((error) => {

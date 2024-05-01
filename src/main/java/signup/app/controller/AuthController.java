@@ -1,24 +1,13 @@
 package signup.app.controller;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.SessionAttributeMethodArgumentResolver;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import signup.app.dto.SignInRequest;
 import signup.app.dto.SignUpRequest;
-
-import signup.app.dto.ValidationRequest;
 import signup.app.model.Session;
 import signup.app.model.User;
 import signup.app.repository.SessionRepository;
 import signup.app.repository.UserRepository;
-
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @RequestMapping("/auth")
@@ -33,12 +22,6 @@ public class AuthController {
     private final SessionRepository sessionRepository;
 
 
-    //FUNCTION THAT RETURNS FULL LIST OF USERS
-    @GetMapping("/getallusers")
-    public List<User> getusers(){
-        return userRepository.findAll();
-
-    }
 
     //FUNCTION TO SIGNIN AND GET THE SESSION TOKEN
     @PostMapping("/signin")
@@ -52,18 +35,6 @@ public class AuthController {
         return session.getToken(); //CORRECT PASSWORD, RETURN TOKEN
     }
 
-    //FUNCTION THAT VALIDATES THE SESSION, RETURN STATUS 200 IF PRESENT IN DATABASE
-    @PostMapping("/validate")
-    public ResponseEntity<String> validate(@RequestBody ValidationRequest validationRequest){
-        Optional<Session> opt_session=sessionRepository.findByUserAndToken(validationRequest.getEmail(),validationRequest.getToken());
-        if(!opt_session.isPresent()) return ResponseEntity.status(500).body("Session not found");
-        Session session= opt_session.get();
-        if(session.getExpiration().isBefore(LocalDateTime.now())) {
-            sessionRepository.delete(session);
-            return ResponseEntity.status(500).body("Session expired");
-        }
-        return ResponseEntity.ok("User validated");
-    }
 
 
     @PostMapping("/signup")
@@ -83,87 +54,5 @@ public class AuthController {
 
 
         return "1";
-    }
-
-    //FUNCTION TO DELETE USER FROM DB 
-    @DeleteMapping("/deleteuser/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Integer id) {
-        try{
-            userRepository.deleteById(id);
-        }catch(Exception e ){
-            return ResponseEntity.status(500).body("Failed to delete the user");
-        }
-        return ResponseEntity.ok("User deleted successfully");
-    }
-
-    @PutMapping("/updateuser/{id}")
-    //THIS CONTROLLER SEARCHES FOR EXISTING USER WITHS SPECIFIED ID AND OVERWRITES THE PARAMETERS
-    public ResponseEntity<String> updateuser(@PathVariable Integer id, @RequestBody SignUpRequest updateUserRequest){
-        //VALIDATE THE REQUEST
-        if(updateUserRequest.getEmail()==null || updateUserRequest.getPassword()==null || updateUserRequest.getFirstname()==null || updateUserRequest.getSecondname()==null || updateUserRequest.getAddressstreet()==null || updateUserRequest.getAddressnumber()==null || updateUserRequest.getAddresscity()==null || updateUserRequest.getAddressprovince()==null || updateUserRequest.getBirthdate()==null) return ResponseEntity.status(500).body("Invalid request");
-        if(updateUserRequest.getEmail().isEmpty() || updateUserRequest.getPassword().isEmpty() || updateUserRequest.getFirstname().isEmpty() || updateUserRequest.getSecondname().isEmpty() || updateUserRequest.getAddressstreet().isEmpty() || updateUserRequest.getAddresscity().isEmpty()  || updateUserRequest.getAddressprovince().isEmpty() ) return ResponseEntity.status(500).body("Invalid request");
-        //VERIFY THE USER EXISTS
-        Optional<User> opt_user=userRepository.findById(id);
-        if(!opt_user.isPresent()) return ResponseEntity.status(500).body("The user you requested to update does not exist");
-        User actual_user=opt_user.get();
-        //CHANGE ONLY THE PARAMETERS SENT WITH THE REQUEST
-        
-        actual_user.setEmail(updateUserRequest.getEmail());
-        actual_user.setPassword(updateUserRequest.getPassword());
-        actual_user.setFirstname(updateUserRequest.getFirstname());
-        actual_user.setSecondname(updateUserRequest.getSecondname());
-        actual_user.setAddressstreet(updateUserRequest.getAddressstreet());
-        actual_user.setAddressnumber(updateUserRequest.getAddressnumber());
-        actual_user.setAddresscity(updateUserRequest.getAddresscity());
-        actual_user.setAddressprovince(updateUserRequest.getAddressprovince());
-        actual_user.setBirthdate(updateUserRequest.getBirthdate());
-        userRepository.save(actual_user);
-
-        return ResponseEntity.ok("User updated successfully");
-    }
-
-
-        @GetMapping("/getCookie")
-    public String getCookieValue(HttpServletRequest request) {
-        // Get all cookies from the request
-        Cookie[] cookies = request.getCookies();
-
-        // Search for a specific cookie
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("sessiontoken".equals(cookie.getName())) {
-                    // If the cookie is found, return its value
-                    return "Cookie Value: " + cookie.getValue();
-                }
-            }
-        }
-        
-        // If the cookie is not found, return a message
-        return "Cookie not found";
-    }
-
-
-
-    //FUNCTION THAT VALIDATES THE SESSION, RETURN STATUS 200 IF PRESENT IN DATABASE
-    @PostMapping("/validate2")
-    public ResponseEntity<String> validate2(HttpServletRequest request){
-        String sessiontoken="";
-        String email="";
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("sessiontoken".equals(cookie.getName())) sessiontoken=cookie.getValue();
-                if ("user".equals(cookie.getName())) email=cookie.getValue();                
-            }
-        }
-        
-        Optional<Session> opt_session=sessionRepository.findByUserAndToken(email,sessiontoken);
-        if(!opt_session.isPresent()) return ResponseEntity.status(500).body("Session not found");
-        Session session= opt_session.get();
-        if(session.getExpiration().isBefore(LocalDateTime.now())) {
-            sessionRepository.delete(session);
-            return ResponseEntity.status(500).body("Session expired");
-        }
-        return ResponseEntity.ok("User validated");
     }
 }

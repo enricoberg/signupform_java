@@ -1,4 +1,3 @@
-
 function updateView(){
     let etitems=document.querySelectorAll(".etitem");
     etitems.forEach(function(etitem){
@@ -34,17 +33,16 @@ function inputToTableItem(){
             let content=inputElement.value;
             inputElement.remove();
             etitem.innerHTML=content;
+            etitem.classList.add("text-primary");
+            if(!etitem.classList.contains("edited")) etitem.classList.add("edited");
         }
     });
-
 }
 
 //FUNCTION THAT LOADS ALL THE USERS FROM THE DATABASE AND DRAWS THE TABLE WITH THE RETRIEVED DATA (RUNS AT PAGE LOAD)
-function visualizeUsers(){
-    
+function visualizeUsers(){    
     const target_table=document.querySelector("#targettable");
-    target_table.innerHTML=`<div class="row">
-                    
+    target_table.innerHTML=`<div class="row">                    
     <div class="col-1  text-center etheader border rounded-top bg-primary text-light">
         <h5>ID</h5>
     </div> 
@@ -77,12 +75,10 @@ function visualizeUsers(){
     </div>
     <div class="col-1 text-center etheader border rounded-top bg-primary text-light ">
         <h5>Action</h5>
-    </div> 
+    </div>     
+</div>`;    
     
-</div>`;
-    
-    
-    axios.get('/auth/getallusers')
+    axios.get('/accounts/getallusers')
       .then(function (response) {        
 
         const users = response.data.map(userObj => {
@@ -114,8 +110,8 @@ function visualizeUsers(){
                 <div class="col-1 py-2 text-center etitem border  bg-light etinactive triggerrowcontrol editable boxcity">${element.addresscity}</div>
                 <div class="col-1 py-2 text-center etitem border  bg-light etinactive triggerrowcontrol editable boxprovince">${element.addressprovince}</div>     
                 <div class="col-1 py-2 text-center etitem border  bg-light etinactive ">
-                    <i class="fa fa-trash-o bg-danger px-2 py-2 mx-2 actionbutton"  onclick="deleteItem(${element.id})" aria-hidden="true"></i>
-                    <i class="fa fa-floppy-o bg-success px-2 py-2 mx-2 actionbutton" onclick="updateItem(this)"  aria-hidden="true"></i>
+                    <i class="fa fa-trash-o bg-danger px-3 py-2 mx-2 actionbutton"  onclick="deleteItem(${element.id})" aria-hidden="true"></i> Delete
+                    
                 </div>                
             </div>`;
           });
@@ -124,12 +120,10 @@ function visualizeUsers(){
 
 }
 
-
-
 //FUNCTION TO DELETE ONE USER
 function deleteItem(id){
     if(!window.confirm("ARE YOU SURE YOU WANT TO DELETE THIS USER PERMANENTLY?")) return;          
-    axios.delete(`/auth/deleteuser/${id}`)
+    axios.delete(`/accounts/deleteuser/${id}`)
     .then((response) => {
         visualizeUsers();
     })
@@ -138,60 +132,55 @@ function deleteItem(id){
     });       
 }
 
-//FUNCTION TO SAVE THE DATA OF ONE USER AFTER MODIFICATION
-function updateItem(button){
-    if(!window.confirm("ARE YOU SURE YOU WANT TO UPDATE THIS USER?")) return;        
-    const parentRow = button.closest('.row');
-    if (parentRow) {
-        const id = parentRow.querySelector('.boxid').innerHTML;
-        const first = parentRow.querySelector('.boxfirst').innerHTML;
-        const second = parentRow.querySelector('.boxsecond').innerHTML;
-        const email = parentRow.querySelector('.boxemail').innerHTML;
-        const password = parentRow.querySelector('.boxpassword').innerHTML;
-        const street= parentRow.querySelector('.boxstreet').innerHTML;
-        const number = parentRow.querySelector('.boxnumber').innerHTML;
-        const city = parentRow.querySelector('.boxcity').innerHTML;
-        const province = parentRow.querySelector('.boxprovince').innerHTML;
-        const birthdate = parentRow.querySelector('.boxbirthdate').innerHTML;
+//FUNCTION TO SAVE THE DATA OF ALL MODIFIED USERS
+function saveModifications(){
+    inputToTableItem();
+    const modified_items=document.querySelectorAll(".edited");
+    if(!window.confirm("ARE YOU SURE YOU WANT TO UPDATE ALL "+modified_items.length+" MODIFIED FIELDS?")) return;  
+    let processed_items=0;
+    
+    modified_items.forEach(function(button){
+        processed_items++;
+        const parentRow = button.closest('.row');
+        if (parentRow) {
+            const id = parentRow.querySelector('.boxid').innerHTML;
+            const first = parentRow.querySelector('.boxfirst').innerHTML;
+            const second = parentRow.querySelector('.boxsecond').innerHTML;
+            const email = parentRow.querySelector('.boxemail').innerHTML;
+            const password = parentRow.querySelector('.boxpassword').innerHTML;
+            const street= parentRow.querySelector('.boxstreet').innerHTML;
+            const number = parentRow.querySelector('.boxnumber').innerHTML;
+            const city = parentRow.querySelector('.boxcity').innerHTML;
+            const province = parentRow.querySelector('.boxprovince').innerHTML;
+            const birthdate = parentRow.querySelector('.boxbirthdate').innerHTML;
 
-        if(!id || !email || !password || !street || !number || !city || !province || !birthdate || !first || !second) return;
-        const user_correct = { 
-                                email: email,                                
-                                password: password,  
-                                firstname: first,
-                                secondname: second,  
-                                addressstreet: street,
-                                addresscity: city,
-                                addressnumber: number,
-                                addressprovince: province,
-                                birthdate: birthdate    
-                            };
+            if(!id || !email || !password || !street || !number || !city || !province || !birthdate || !first || !second) return;
+            const user_correct = { 
+                                    email: email,                                
+                                    password: password,  
+                                    firstname: first,
+                                    secondname: second,  
+                                    addressstreet: street,
+                                    addresscity: city,
+                                    addressnumber: number,
+                                    addressprovince: province,
+                                    birthdate: birthdate    
+                                };
 
-axios.put(`/auth/updateuser/${id}`, user_correct)
-  .then((response) => {
-    console.log(response)
-    visualizeUsers();
-  })
-  .catch((error) => {
-    console.log(error)
-    alert("Something went wrong updating this user")
-  });
-    }
+            axios.put(`/accounts/updateuser/${id}`, user_correct) ;
+            if (processed_items==modified_items.length)  setTimeout(()=>{visualizeUsers()},250);         
+            
+        }
+    });
     
 }
-
-
-
+function logOut(){
+    if(!confirm("Are you sure you want to log out of the application?")) return;
+    document.cookie = `sessiontoken=; path=/`;  
+    document.cookie = `user=; path=/`;  
+    location.replace("/");
+}
 visualizeUsers();
 
 
-// axios.post('/auth/validate2')
-//       .then(function (response) { 
 
-//         console.log(response);
-//         console.log(response.data);
-//       })
-//       .catch((error) => {
-//         console.log(error)
-//         alert("Something went wrong validating")
-//       });

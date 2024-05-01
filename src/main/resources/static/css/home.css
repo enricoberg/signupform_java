@@ -9,3 +9,35 @@
     
 }
 i.actionbutton{ cursor: pointer;}
+
+.savebutton{
+    position: fixed; 
+    top: 20px;   
+    left: 30px;
+    width: 150px;
+    color: white;
+    height: 45px;
+    border-radius: 10px;
+    line-height: 45px;
+    background-color: #28a745;
+    cursor: pointer;   
+    
+}
+.logoutbutton{
+    position: fixed; 
+    top: 20px;   
+    right: 30px;
+    width: 150px;
+    color: white;
+    height: 45px;
+    border-radius: 10px;
+    line-height: 45px;
+    cursor: pointer;   
+    
+}
+
+#saveicon{
+    width: 30px;
+    margin-left: 15px;
+    margin-right: 10px;
+}
