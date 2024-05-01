@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SessionAttributeMethodArgumentResolver;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import signup.app.dto.SignInRequest;
 import signup.app.dto.SignUpRequest;
 
@@ -117,5 +120,50 @@ public class AuthController {
         userRepository.save(actual_user);
 
         return ResponseEntity.ok("User updated successfully");
+    }
+
+
+        @GetMapping("/getCookie")
+    public String getCookieValue(HttpServletRequest request) {
+        // Get all cookies from the request
+        Cookie[] cookies = request.getCookies();
+
+        // Search for a specific cookie
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("sessiontoken".equals(cookie.getName())) {
+                    // If the cookie is found, return its value
+                    return "Cookie Value: " + cookie.getValue();
+                }
+            }
+        }
+        
+        // If the cookie is not found, return a message
+        return "Cookie not found";
+    }
+
+
+
+    //FUNCTION THAT VALIDATES THE SESSION, RETURN STATUS 200 IF PRESENT IN DATABASE
+    @PostMapping("/validate2")
+    public ResponseEntity<String> validate2(HttpServletRequest request){
+        String sessiontoken="";
+        String email="";
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("sessiontoken".equals(cookie.getName())) sessiontoken=cookie.getValue();
+                if ("user".equals(cookie.getName())) email=cookie.getValue();                
+            }
+        }
+        
+        Optional<Session> opt_session=sessionRepository.findByUserAndToken(email,sessiontoken);
+        if(!opt_session.isPresent()) return ResponseEntity.status(500).body("Session not found");
+        Session session= opt_session.get();
+        if(session.getExpiration().isBefore(LocalDateTime.now())) {
+            sessionRepository.delete(session);
+            return ResponseEntity.status(500).body("Session expired");
+        }
+        return ResponseEntity.ok("User validated");
     }
 }

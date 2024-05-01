@@ -10,7 +10,32 @@ function switchMode(){
 function validateLogin(submitting){
     const email = document.querySelector("#signinEmail").value;
     const password = document.querySelector("#signinPassword").value;
-    if(email=="" || password=="") sendFormError("You must insert your credentials first","signinError");
+    if(email=="" || password=="") {
+        sendFormError("You must insert your credentials first","signinError");
+        return;}
+    if(!submitting) return;
+    const user_data= {
+        email: email,
+        password: password,        
+    }
+    axios.post(`/auth/signin`, user_data)
+    .then((response) => {      
+        
+        if(response.data==0){            
+                sendFormError("The email you inserted is not registered yet","signinError");
+                return;}
+        if(response.data==1){            
+                sendFormError("Your credentials are not matching","signinError");
+                return;}
+        
+        document.cookie = `sessiontoken=${response.data}; path=/`;  
+        document.cookie = `user=${email}; path=/`;  
+        alert("LOGGED IN")
+
+    })
+    .catch((error) => {
+        alert("Something went wrong trying to signin");
+    }); 
 
 
     
@@ -18,9 +43,8 @@ function validateLogin(submitting){
 
 function validateSignup(submitting){
     
-    
-    const form=document.querySelector(".signupform");
-    
+    if(!document.querySelector("#signupError").classList.contains("hidden")) document.querySelector("#signupError").classList.add("hidden");
+    const form=document.querySelector(".signupform");    
     const email = document.querySelector("#email1").value +"@" + document.querySelector("#email2").value;
     const firstname = document.querySelector("#firstname").value;
     const secondname = document.querySelector("#secondname").value;
@@ -47,7 +71,8 @@ function validateSignup(submitting){
     if(!termsaccepted) {
          sendFormError("You must accept the terms first","signupError");
          return;}
-    
+    if(!submitting) return;
+
     const user_data= {
         email: email,
         password: password,
@@ -60,7 +85,8 @@ function validateSignup(submitting){
         birthdate: birth
     }
     axios.post(`/auth/signup`, user_data)
-    .then((response) => {        
+    .then((response) => {      
+         
         switch(response.data){
             case 0:
                 alert("Impossible to signup: parameters are missing");
@@ -107,6 +133,4 @@ function sendFormError(message,cssId){
         signuperror.innerHTML=message;
     
 }
-
-
 

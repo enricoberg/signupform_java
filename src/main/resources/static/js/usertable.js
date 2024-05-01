@@ -183,3 +183,15 @@ axios.put(`/auth/updateuser/${id}`, user_correct)
 
 
 visualizeUsers();
+
+
+// axios.post('/auth/validate2')
+//       .then(function (response) { 
+
+//         console.log(response);
+//         console.log(response.data);
+//       })
+//       .catch((error) => {
+//         console.log(error)
+//         alert("Something went wrong validating")
+//       });
