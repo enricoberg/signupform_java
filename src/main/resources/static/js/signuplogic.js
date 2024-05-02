@@ -72,6 +72,8 @@ function validateSignup(submitting){
         return;}
     else if (password!=repeat) {
         sendFormError("Error: passwords are not matching","signupError");
+        document.querySelector("#inputPassword").value="";
+        document.querySelector("#repeatPassword").value="";
         return; }
     else if(age<18 ){
         sendFormError("You have to be at least 18 years old to register","signupError");
@@ -146,4 +148,16 @@ function sendFormError(message,cssId){
         signuperror.innerHTML=message;
     
 }
-
+//AUTO INSERT OF THE PROVINCE IF CITY IS RECOGNIZED
+function guessProvince(city_inserted){
+    console.log("listening")
+    try{        
+        const cityObject = cities.find(item => item.city === city_inserted.toUpperCase());
+        document.querySelector("#addressprovince").value=cityObject.province;        
+    }
+    catch(error){
+        console.log("No matching province found")
+    }
+}
+const cityinput=document.querySelector("#addresscity");
+cityinput.addEventListener("input", ()=>{guessProvince(cityinput.value)} );

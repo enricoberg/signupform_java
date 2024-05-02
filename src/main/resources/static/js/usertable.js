@@ -50,14 +50,14 @@ function inputToTableItem(){
 function visualizeUsers(){    
     const target_table=document.querySelector("#targettable");
     target_table.innerHTML=`<div class="row">                    
-    <div class="col-1  text-center etheader border rounded-top bg-primary text-light">
+    <div class="col-1  text-center etheader border rounded-top bg-primary text-light ">
         <h5>ID</h5>
     </div> 
     <div class="col-1 text-center etheader border rounded-top bg-primary text-light ">
-        <h5>First Name</h5>
+        <h5>1<sup>st</sup>Name</h5>
     </div>
     <div class="col-1 text-center etheader border rounded-top bg-primary text-light">
-        <h5>Second Name</h5>
+        <h5>2<sup>nd</sup>Name</h5>
     </div>
     <div class="col-2 text-center etheader border rounded-top bg-primary text-light ">
         <h5>Email</h5>
@@ -66,16 +66,16 @@ function visualizeUsers(){
         <h5>Password</h5>
     </div>
     <div class="col-1 text-center etheader border rounded-top bg-primary text-light">
-        <h5>Date of birth</h5>
+        <h5>Birthdate</h5>
     </div>
     <div class="col-1 text-center etheader border rounded-top bg-primary text-light">
-        <h5>Street name</h5>
+        <h5>Street</h5>
     </div>
     <div class="col-1 text-center etheader border rounded-top bg-primary text-light">
-        <h5>Street number</h5>
+        <h5>Str. n<sup>°</sup></h5>
     </div>
     <div class="col-1 text-center etheader border rounded-top bg-primary text-light">
-        <h5>City name</h5>
+        <h5>City</h5>
     </div>
     <div class="col-1 text-center etheader border rounded-top bg-primary text-light">
         <h5>Province</h5>
