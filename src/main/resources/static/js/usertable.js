@@ -1,4 +1,5 @@
 function updateView(){
+    //CREATE AN INPUT INSIDE THE TABLE CELL TO ALLOW MODIFICATION OF THE FIELD
     let etitems=document.querySelectorAll(".etitem");
     etitems.forEach(function(etitem){
         if(!etitem.classList.contains("editable")) return;
@@ -22,6 +23,7 @@ function updateView(){
 }
 
 function inputToTableItem(){
+    //UPDATE THE VALUE OF THE CELL AFTER INPUT HAS BEEN CHANGED
     let etitems=document.querySelectorAll(".etitem");
     etitems.forEach(function(etitem){
         if(etitem.classList.contains("etactive")){

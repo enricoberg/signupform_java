@@ -1,15 +1,10 @@
 package signup.app.model;
 
-
-
 import jakarta.persistence.*;
 import lombok.Data;
-
 import lombok.NoArgsConstructor;
 import signup.app.dto.SignUpRequest;
-
 import java.time.LocalDate;
-
 
 @Data
 @Entity
@@ -31,11 +26,6 @@ public class User {
 
     @Column(nullable = false, length = 20)
     private String secondname;
-
-
-
-
-
 
 
     @Column(nullable = false)

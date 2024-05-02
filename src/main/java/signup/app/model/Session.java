@@ -1,13 +1,9 @@
 package signup.app.model;
-
-
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import signup.app.repository.UserRepository;
-
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Random;
@@ -39,6 +35,7 @@ public class Session {
 
 
     }
+    //FUNCTION TO GENERATE RANDOM STRING OF CUSTOM LENGTH
     public String generateSessionToken(int targetStringLength) {
         int leftLimit = 48;
         int rightLimit = 122;
