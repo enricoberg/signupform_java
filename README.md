@@ -86,7 +86,7 @@ I have created a sql file in the main project folder that you can copy-paste to 
 Then you need to set up the right properties of the app.
 Inside the folder you will find  the application.properties file.
 Open this file and insert the right credentials to access your database (url, username, password).
-You can execute the pre-built JAR file directly from CMD:
+You can execute the pre-built JAR file [(download it here)](https://kdrive.infomaniak.com/app/share/965911/07ae7f0f-5fe9-433a-9872-369080049b5f) directly from CMD:
 
 
 ```xml
