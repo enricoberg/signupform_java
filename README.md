@@ -214,7 +214,7 @@ Type:
 
 ```xml
 
-mvn package
+mvn package -DskipTests
 
 ```
 
