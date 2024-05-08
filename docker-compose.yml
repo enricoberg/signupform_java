@@ -1,0 +1,20 @@
+version: '3.8'
+services:
+  mysqldatabase:    
+    ports:
+      - "3306:3306"
+    environment:      
+      MYSQL_ROOT_PASSWORD: root      
+      MYSQL_DATABASE: spring_form
+    image: mysql
+  app:
+    image: signupform_java
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysqldatabase
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldatabase:3306/spring_form
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+
